@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="police.xsl"?>
+<police xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="police.xsd">
+    <officer>
+        <officerid>POL101</officerid>
+        <name>Muthu</name>
+        <designation>Inspector</designation>
+        <station>Madurai</station>
+        <salary>50000</salary>
+    </officer>
+    <officer>
+        <officerid>POL102</officerid>
+        <name>Mani</name>
+        <designation>Sub-Inspector</designation>
+        <station>Trichy</station>
+        <salary>45000</salary>
+    </officer>
+    <officer>
+        <officerid>POL103</officerid>
+        <name>Ramesh</name>
+        <designation>Constable</designation>
+        <station>Chennai</station>
+        <salary>55000</salary>
+    </officer>
+</police>

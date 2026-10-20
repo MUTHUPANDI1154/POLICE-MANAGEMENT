@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TN Police - Registered Complaints</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(120deg,#082b55,#07559a);
+    min-height:100vh;
+    color:white;
+    padding:30px 20px;
+}
+
+.container{
+    width:100%;
+    max-width:1250px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    font-size:45px;
+}
+
+h1{
+    color:#ffd900;
+    font-size:30px;
+}
+
+h2{
+    font-size:20px;
+    margin-top:5px;
+    color:#e0e0e0;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.count{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.count span{
+    color:#ffd900;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-box {
+    padding: 10px 14px;
+    border-radius: 20px;
+    border: 1px solid #6ca5d4;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-box::placeholder {
+    color: #cbd5e1;
+}
+
+.add{
+    background:#079ff0;
+    color:white;
+    text-decoration:none;
+    padding:10px 20px;
+    border-radius:22px;
+    font-weight:bold;
+    transition: background 0.2s;
+}
+
+.add:hover{
+    background:#00b5ff;
+}
+
+.table-box{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 10px 30px #001d3d;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:950px;
+}
+
+th{
+    background:#07559a;
+    color:#ffd900;
+    padding:13px 10px;
+    text-align:left;
+    font-size: 14px;
+}
+
+td{
+    padding:12px 10px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    font-size: 13px;
+    word-break:break-word;
+}
+
+tr:hover{
+    background:rgba(255,255,255,.07);
+}
+
+.csr-tag {
+    background: #0284c7;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.status-badge {
+    color: #4ade80;
+    font-weight: bold;
+}
+
+.btn{
+    padding:6px 12px;
+    border:none;
+    border-radius:5px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.delete{
+    background:#e74c3c;
+    color:white;
+}
+
+.delete:hover{
+    background:#c0392b;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    font-size:18px;
+    color:#cbd5e1;
+}
+
+.footer{
+    text-align:center;
+    margin-top:25px;
+}
+
+.footer a{
+    color:#ffd900;
+    text-decoration:none;
+    font-weight:bold;
+    margin: 0 12px;
+}
+
+.footer a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">👮‍♂️</div>
+        <h1>TN Police Department</h1>
+        <h2>Citizen Registered Complaints Portal</h2>
+    </div>
+
+    <div class="top">
+        <div class="count">
+            Total Complaints: <span id="total">0</span>
+        </div>
+
+        <div class="actions-bar">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search CSR, Name, Offence..." onkeyup="filterComplaints()">
+            <a href="complaint.html" class="add">+ File New Complaint</a>
+        </div>
+    </div>
+
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th>CSR Number</th>
+                    <th>Complainant Name</th>
+                    <th>Mobile</th>
+                    <th>Category</th>
+                    <th>Type of Offence</th>
+                    <th>Incident Date</th>
+                    <th>Place / Location</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="complaintTable">
+            </tbody>
+        </table>
+
+        <div id="empty" class="empty" style="display:none;">
+            No registered complaints found.
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="complaint.html">← Back to File Complaint</a> |
+        <a href="index.html">Home Page</a> |
+        <a href="users.html">View Registered Users</a> |
+        <a href="officers.html">View Police Officers</a>
+    </div>
+
+</div>
+
+<script>
+// Seed default sample complaints if empty
+function getComplaints() {
+    let complaints = JSON.parse(localStorage.getItem("tnComplaints")) || [];
+    if (complaints.length === 0) {
+        complaints = [
+            {
+                csrNo: "CSR-TN-2026-1042",
+                name: "Karthik Raj",
+                mobile: "9876543210",
+                email: "karthik@example.com",
+                category: "Theft & Property Crime",
+                offence: "Two-Wheeler Theft",
+                date: "2026-10-15",
+                place: "T. Nagar, Chennai",
+                desc: "Hero Splendor bike parked near market was missing.",
+                status: "Investigation Ongoing",
+                time: "15/10/2026, 11:30 AM"
+            },
+            {
+                csrNo: "CSR-TN-2026-1088",
+                name: "Priya Sundaram",
+                mobile: "9123456780",
+                email: "priya@example.com",
+                category: "Harassment / Cybercrime",
+                offence: "Social Media Identity Theft",
+                date: "2026-10-17",
+                place: "Madurai City",
+                desc: "Fake account created using personal photos.",
+                status: "FIR Registered",
+                time: "17/10/2026, 04:15 PM"
+            }
+        ];
+        localStorage.setItem("tnComplaints", JSON.stringify(complaints));
+    }
+    return complaints;
+}
+
+function displayComplaints(filterText = "") {
+    let complaints = getComplaints();
+    let table = document.getElementById("complaintTable");
+    let total = document.getElementById("total");
+    let empty = document.getElementById("empty");
+
+    table.innerHTML = "";
+    total.innerText = complaints.length;
+
+    let filtered = complaints.filter(c => {
+        let text = (c.csrNo + " " + c.name + " " + c.offence + " " + c.place + " " + c.category).toLowerCase();
+        return text.includes(filterText.toLowerCase());
+    });
+
+    if (filtered.length === 0) {
+        empty.style.display = "block";
+        return;
+    } else {
+        empty.style.display = "none";
+    }
+
+    filtered.forEach(function(comp, index) {
+        let row = table.insertRow();
+        row.innerHTML = `
+            <td><strong>${index + 1}</strong></td>
+            <td><span class="csr-tag">${comp.csrNo}</span></td>
+            <td>${comp.name}</td>
+            <td>${comp.mobile}</td>
+            <td>${comp.category}</td>
+            <td>${comp.offence}</td>
+            <td>${comp.date}</td>
+            <td>${comp.place}</td>
+            <td><span class="status-badge">${comp.status || "Registered"}</span></td>
+            <td>
+                <button class="btn delete" onclick="deleteComplaint(${index})">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function filterComplaints() {
+    let q = document.getElementById("searchInput").value;
+    displayComplaints(q);
+}
+
+function deleteComplaint(index) {
+    let complaints = getComplaints();
+    if (confirm("Are you sure you want to delete this complaint record?")) {
+        complaints.splice(index, 1);
+        localStorage.setItem("tnComplaints", JSON.stringify(complaints));
+        displayComplaints();
+    }
+}
+
+displayComplaints();
+</script>
+
+</body>
+</html>

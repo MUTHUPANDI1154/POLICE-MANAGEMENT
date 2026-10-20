@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TN Police - Create Account</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(120deg,#082b55,#07559a);
+    min-height:100vh;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.box{
+    width:420px;
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    border-radius:18px;
+    padding:30px 26px;
+    box-shadow:0 10px 30px #001d3d;
+}
+
+.logo{
+    text-align:center;
+    font-size:40px;
+}
+
+h1{
+    text-align:center;
+    color:#ffd900;
+    font-size:28px;
+}
+
+h2{
+    text-align:center;
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    font-size:14px;
+    margin:9px 0 5px;
+}
+
+input{
+    width:100%;
+    height:34px;
+    border:0;
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:13px;
+    outline:none;
+}
+
+button{
+    width:100%;
+    height:38px;
+    border:0;
+    border-radius:22px;
+    background:#079ff0;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+    margin-top:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00b5ff;
+}
+
+.msg{
+    text-align:center;
+    color:#ffeb3b;
+    font-size:12px;
+    margin-top:8px;
+}
+
+.view{
+    text-align:center;
+    margin-top:18px;
+}
+
+.view a{
+    color:#ffd900;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.view a:hover{
+    text-decoration:underline;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="logo">👮</div>
+
+    <h1>TN Police</h1>
+
+    <h2>Create Account</h2>
+
+    <form id="registerForm">
+
+        <label>Full Name</label>
+        <input type="text" id="name" required>
+
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" maxlength="10" required>
+
+        <label>Email</label>
+        <input type="email" id="email" required>
+
+        <label>Username</label>
+        <input type="text" id="username" required>
+
+        <label>Password</label>
+        <input type="password" id="password" required>
+
+        <label>Confirm Password</label>
+        <input type="password" id="confirm" required>
+
+        <div id="msg" class="msg"></div>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div class="view">
+
+        <a href="users.html">View Registered Users</a>
+
+        <br><br>
+
+        <a href="index.html">← Back</a>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("registerForm").addEventListener(
+    "submit",
+    function(e){
+
+        e.preventDefault();
+
+        let name =
+            document.getElementById("name").value.trim();
+
+        let mobile =
+            document.getElementById("mobile").value.trim();
+
+        let email =
+            document.getElementById("email").value.trim();
+
+        let username =
+            document.getElementById("username").value.trim();
+
+        let password =
+            document.getElementById("password").value;
+
+        let confirm =
+            document.getElementById("confirm").value;
+
+
+        /* Password Validation */
+
+        if(password !== confirm){
+
+            document.getElementById("msg").innerText =
+                "Passwords do not match!";
+
+            return;
+        }
+
+
+        /* Get Existing Users */
+
+        let users =
+            JSON.parse(localStorage.getItem("tnUsers")) || [];
+
+
+        /* Store New User */
+
+        users.push({
+
+            name:name,
+
+            mobile:mobile,
+
+            email:email,
+
+            username:username,
+
+            password:password,
+
+            date:new Date().toLocaleDateString("en-GB"),
+
+            time:new Date().toLocaleTimeString(
+                "en-US",
+                {
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            )
+
+        });
+
+
+        /* Save Users */
+
+        localStorage.setItem(
+            "tnUsers",
+            JSON.stringify(users)
+        );
+
+
+        /* Open Registered Users Page */
+
+        window.location.href = "users.html";
+
+    }
+);
+
+</script>
+
+</body>
+</html>

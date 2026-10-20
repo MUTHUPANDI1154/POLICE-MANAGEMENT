@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TN Police - Online Examination Mark List</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(120deg,#082b55,#07559a);
+    min-height:100vh;
+    color:white;
+    padding:30px 20px;
+}
+
+.container{
+    width:100%;
+    max-width:1150px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    font-size:45px;
+}
+
+h1{
+    color:#ffd900;
+    font-size:30px;
+}
+
+h2{
+    font-size:20px;
+    margin-top:5px;
+    color:#e0e0e0;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.count{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.count span{
+    color:#ffd900;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.add{
+    background:#079ff0;
+    color:white;
+    text-decoration:none;
+    padding:10px 20px;
+    border-radius:22px;
+    font-weight:bold;
+    transition: background 0.2s;
+}
+
+.add:hover{
+    background:#00b5ff;
+}
+
+.table-box{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 10px 30px #001d3d;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
+}
+
+th{
+    background:#07559a;
+    color:#ffd900;
+    padding:13px 10px;
+    text-align:left;
+    font-size: 14px;
+}
+
+td{
+    padding:12px 10px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    font-size: 14px;
+}
+
+tr:hover{
+    background:rgba(255,255,255,.07);
+}
+
+.pass-badge {
+    background: #166534;
+    color: #86efac;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.fail-badge {
+    background: #991b1b;
+    color: #fca5a5;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.btn{
+    padding:6px 12px;
+    border:none;
+    border-radius:5px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.delete{
+    background:#e74c3c;
+    color:white;
+}
+
+.delete:hover{
+    background:#c0392b;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    font-size:18px;
+    color:#cbd5e1;
+}
+
+.footer{
+    text-align:center;
+    margin-top:25px;
+}
+
+.footer a{
+    color:#ffd900;
+    text-decoration:none;
+    font-weight:bold;
+    margin: 0 12px;
+}
+
+.footer a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">📊</div>
+        <h1>TN Police Examination</h1>
+        <h2>Candidate Results & Mark List (Data Tier)</h2>
+    </div>
+
+    <div class="top">
+        <div class="count">
+            Total Candidates Evaluated: <span id="total">0</span>
+        </div>
+
+        <div class="actions-bar">
+            <a href="exam_online.html" class="add">📝 Take Examination</a>
+        </div>
+    </div>
+
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th>Candidate Name</th>
+                    <th>Register Number</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                    <th>Exam Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="marksTable">
+            </tbody>
+        </table>
+
+        <div id="empty" class="empty" style="display:none;">
+            No examination records found. Take the exam to see results!
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="exam_online.html">Take Exam</a> |
+        <a href="index.html">Home Page</a> |
+        <a href="complaints.html">View Complaints</a> |
+        <a href="users.html">View Users</a>
+    </div>
+
+</div>
+
+<script>
+function getExamResults() {
+    let results = JSON.parse(localStorage.getItem("tnExamResults")) || [];
+    if (results.length === 0) {
+        results = [
+            {
+                name: "Karthik Raj",
+                regNo: "710021104001",
+                score: 5,
+                total: 5,
+                percentage: "100.00",
+                status: "PASS",
+                date: "16/10/2026, 11:20 AM"
+            },
+            {
+                name: "Ananya Ramesh",
+                regNo: "710021104015",
+                score: 4,
+                total: 5,
+                percentage: "80.00",
+                status: "PASS",
+                date: "17/10/2026, 02:45 PM"
+            }
+        ];
+        localStorage.setItem("tnExamResults", JSON.stringify(results));
+    }
+    return results;
+}
+
+function displayResults() {
+    let results = getExamResults();
+    let table = document.getElementById("marksTable");
+    let total = document.getElementById("total");
+    let empty = document.getElementById("empty");
+
+    table.innerHTML = "";
+    total.innerText = results.length;
+
+    if (results.length === 0) {
+        empty.style.display = "block";
+        return;
+    } else {
+        empty.style.display = "none";
+    }
+
+    results.forEach(function(res, index) {
+        let row = table.insertRow();
+        let isPass = res.status === "PASS";
+        row.innerHTML = `
+            <td><strong>${index + 1}</strong></td>
+            <td><strong>${res.name}</strong></td>
+            <td><code>${res.regNo}</code></td>
+            <td><strong>${res.score}</strong> / ${res.total}</td>
+            <td><strong>${res.percentage}%</strong></td>
+            <td><span class="${isPass ? 'pass-badge' : 'fail-badge'}">${res.status}</span></td>
+            <td>${res.date}</td>
+            <td>
+                <button class="btn delete" onclick="deleteResult(${index})">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function deleteResult(index) {
+    let results = getExamResults();
+    if (confirm("Delete this candidate examination result?")) {
+        results.splice(index, 1);
+        localStorage.setItem("tnExamResults", JSON.stringify(results));
+        displayResults();
+    }
+}
+
+displayResults();
+</script>
+
+</body>
+</html>

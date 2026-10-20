@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Police Officer Login - Session Tracking (Program 2)</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #082b55, #07559a);
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box {
+    width: 400px;
+    background: rgba(255, 255, 255, .13);
+    border: 1px solid #6ca5d4;
+    border-radius: 18px;
+    padding: 30px 26px;
+    box-shadow: 0 10px 30px #001d3d;
+}
+.logo {
+    text-align: center;
+    font-size: 40px;
+}
+h1 {
+    text-align: center;
+    color: #ffd900;
+    font-size: 26px;
+}
+h2 {
+    text-align: center;
+    font-size: 17px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+}
+label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 14px 0 5px;
+}
+input {
+    width: 100%;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+    color: #000000;
+}
+button {
+    width: 100%;
+    height: 40px;
+    border: 0;
+    border-radius: 22px;
+    background: #079ff0;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 24px;
+    cursor: pointer;
+}
+button:hover {
+    background: #00b5ff;
+}
+.back-link {
+    text-align: center;
+    margin-top: 20px;
+}
+.back-link a {
+    color: #ffd900;
+    text-decoration: none;
+    font-weight: bold;
+}
+.back-link a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <div class="logo">🚔</div>
+    <h1>TN Police Department</h1>
+    <h2>Officer Login (Program 2 - Session Tracking)</h2>
+
+    <!-- Officer Login Form with local session tracking -->
+    <form id="officerLoginForm">
+
+        <label for="officerName">Officer Name</label>
+        <input type="text" id="officerName" name="officerName" placeholder="Enter Officer Name" required>
+
+        <label for="policeId">Police ID</label>
+        <input type="text" id="policeId" name="policeId" placeholder="Enter Police ID" required>
+
+        <button type="submit">Login & Track Session</button>
+
+    </form>
+
+    <!-- SESSION TRACKING RESULT CARD -->
+    <div id="sessionResult" style="display: none; text-align: center;">
+        <div style="background: #2ecc71; color: #082b55; padding: 12px; border-radius: 8px; font-weight: bold; margin: 15px 0;">
+            ✅ Logged in & Session Tracked Successfully!
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; font-size: 14px;">
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Officer Name:</th><td id="sessOfficerName" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Police ID:</th><td id="sessPoliceId" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Session ID:</th><td id="sessId" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); font-family: monospace; font-size: 12px; word-break: break-all;"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Number of Visits:</th><td id="sessVisits" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); font-weight: bold; color: #ffd900;"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Session Status:</th><td style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #2ecc71; font-weight: bold;">● Active (Tracked)</td></tr>
+        </table>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 10px;">
+            <button type="button" onclick="logoutSession()" style="background: rgba(255,255,255,0.2); border: 1px solid #ffd900; color: #ffd900; margin-top: 0;">← Logout / Login Again</button>
+            <a href="officers.html" style="display: block; background: #079ff0; color: white; padding: 10px; border-radius: 20px; text-decoration: none; font-weight: bold;">📋 View All Officers</a>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="officer.html">← Back to Officer Dashboard</a>
+    </div>
+</div>
+
+<script>
+document.getElementById("officerLoginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const officerName = document.getElementById("officerName").value.trim();
+    const policeId = document.getElementById("policeId").value.trim();
+
+    // Session Tracking logic
+    let visits = parseInt(localStorage.getItem("visit_" + policeId) || "0") + 1;
+    localStorage.setItem("visit_" + policeId, visits);
+
+    let sessionId = sessionStorage.getItem("officer_session_id");
+    if (!sessionId) {
+        sessionId = "TNP-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "-" + Date.now().toString().slice(-4);
+        sessionStorage.setItem("officer_session_id", sessionId);
+    }
+
+    document.getElementById("sessOfficerName").innerText = officerName;
+    document.getElementById("sessPoliceId").innerText = policeId;
+    document.getElementById("sessId").innerText = sessionId;
+    document.getElementById("sessVisits").innerText = visits;
+
+    document.getElementById("officerLoginForm").style.display = "none";
+    document.getElementById("sessionResult").style.display = "block";
+});
+
+function logoutSession() {
+    document.getElementById("officerLoginForm").reset();
+    document.getElementById("sessionResult").style.display = "none";
+    document.getElementById("officerLoginForm").style.display = "block";
+}
+</script>
+
+</body>
+</html>

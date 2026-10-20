@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TN Police - Registered Officers</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(120deg,#082b55,#07559a);
+    min-height:100vh;
+    color:white;
+    padding:30px 20px;
+}
+
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    font-size:45px;
+}
+
+h1{
+    color:#ffd900;
+    font-size:30px;
+}
+
+h2{
+    font-size:20px;
+    margin-top:5px;
+    color:#e0e0e0;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.count{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.count span{
+    color:#ffd900;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-box {
+    padding: 10px 14px;
+    border-radius: 20px;
+    border: 1px solid #6ca5d4;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-box::placeholder {
+    color: #cbd5e1;
+}
+
+.add{
+    background:#079ff0;
+    color:white;
+    text-decoration:none;
+    padding:10px 20px;
+    border-radius:22px;
+    font-weight:bold;
+    transition: background 0.2s;
+}
+
+.add:hover{
+    background:#00b5ff;
+}
+
+.table-box{
+    background:rgba(255,255,255,.13);
+    border:1px solid #6ca5d4;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 10px 30px #001d3d;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
+}
+
+th{
+    background:#07559a;
+    color:#ffd900;
+    padding:13px 10px;
+    text-align:left;
+    font-size: 14px;
+}
+
+td{
+    padding:12px 10px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    font-size: 14px;
+}
+
+tr:hover{
+    background:rgba(255,255,255,.07);
+}
+
+.id-badge {
+    background: #0284c7;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.rank-badge {
+    background: rgba(255, 217, 0, 0.2);
+    color: #ffd900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.btn{
+    padding:6px 12px;
+    border:none;
+    border-radius:5px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.delete{
+    background:#e74c3c;
+    color:white;
+}
+
+.delete:hover{
+    background:#c0392b;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    font-size:18px;
+    color:#cbd5e1;
+}
+
+.footer{
+    text-align:center;
+    margin-top:25px;
+}
+
+.footer a{
+    color:#ffd900;
+    text-decoration:none;
+    font-weight:bold;
+    margin: 0 12px;
+}
+
+.footer a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">👮‍♂️</div>
+        <h1>TN Police Department</h1>
+        <h2>Registered Police Officers Directory</h2>
+    </div>
+
+    <div class="top">
+        <div class="count">
+            Total Active Officers: <span id="total">0</span>
+        </div>
+
+        <div class="actions-bar">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search ID, Name, Station..." onkeyup="filterOfficers()">
+            <a href="officer_registration_form.html" class="add">+ Register New Officer</a>
+        </div>
+    </div>
+
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th>Police ID</th>
+                    <th>Officer Name</th>
+                    <th>Rank / Designation</th>
+                    <th>Police Station</th>
+                    <th>Registration Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="officerTable">
+            </tbody>
+        </table>
+
+        <div id="empty" class="empty" style="display:none;">
+            No registered police officers found.
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="officer_registration_form.html">Register Officer</a> |
+        <a href="officer_login_form.html">Officer Login (Session)</a> |
+        <a href="officer.html">Officer Dashboard</a> |
+        <a href="index.html">Home Page</a>
+    </div>
+
+</div>
+
+<script>
+function getOfficers() {
+    let officers = JSON.parse(localStorage.getItem("tnOfficers")) || [];
+    if (officers.length === 0) {
+        officers = [
+            {
+                id: "TNP-101",
+                name: "Muthu",
+                rank: "Inspector of Police",
+                station: "Madurai Central PS",
+                date: "10/08/2026, 10:00 AM"
+            },
+            {
+                id: "TNP-102",
+                name: "Mani",
+                rank: "Sub-Inspector (SI)",
+                station: "Trichy North PS",
+                date: "12/08/2026, 09:30 AM"
+            },
+            {
+                id: "TNP-103",
+                name: "Ramesh",
+                rank: "Head Constable",
+                station: "Chennai Marina PS",
+                date: "14/08/2026, 02:15 PM"
+            }
+        ];
+        localStorage.setItem("tnOfficers", JSON.stringify(officers));
+    }
+    return officers;
+}
+
+function displayOfficers(filterText = "") {
+    let officers = getOfficers();
+    let table = document.getElementById("officerTable");
+    let total = document.getElementById("total");
+    let empty = document.getElementById("empty");
+
+    table.innerHTML = "";
+    total.innerText = officers.length;
+
+    let filtered = officers.filter(o => {
+        let text = (o.id + " " + o.name + " " + o.rank + " " + o.station).toLowerCase();
+        return text.includes(filterText.toLowerCase());
+    });
+
+    if (filtered.length === 0) {
+        empty.style.display = "block";
+        return;
+    } else {
+        empty.style.display = "none";
+    }
+
+    filtered.forEach(function(officer, index) {
+        let row = table.insertRow();
+        row.innerHTML = `
+            <td><strong>${index + 1}</strong></td>
+            <td><span class="id-badge">${officer.id}</span></td>
+            <td><strong>${officer.name}</strong></td>
+            <td><span class="rank-badge">${officer.rank}</span></td>
+            <td>${officer.station}</td>
+            <td>${officer.date || "N/A"}</td>
+            <td><span style="color: #4ade80; font-weight: bold;">● Active Duty</span></td>
+            <td>
+                <button class="btn delete" onclick="deleteOfficer(${index})">Delete</button>
+            </td>
+        `;
+    });
+}
+
+function filterOfficers() {
+    let q = document.getElementById("searchInput").value;
+    displayOfficers(q);
+}
+
+function deleteOfficer(index) {
+    let officers = getOfficers();
+    if (confirm("Are you sure you want to remove this officer record?")) {
+        officers.splice(index, 1);
+        localStorage.setItem("tnOfficers", JSON.stringify(officers));
+        displayOfficers();
+    }
+}
+
+displayOfficers();
+</script>
+
+</body>
+</html>

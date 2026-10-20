@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TN Police - Online Examination System</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .exam-page-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+            text-align: left;
+        }
+        .exam-header {
+            background: #003b63;
+            color: white;
+            padding: 22px 30px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        .exam-header h1 {
+            color: #ffd900;
+            font-size: 22px;
+            margin: 0;
+            text-shadow: none;
+        }
+        .candidate-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .candidate-box label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            color: #003b63;
+            margin-bottom: 5px;
+        }
+        .candidate-box input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+        }
+        .q-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 6px solid #0077a8;
+        }
+        .q-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #003b63;
+            margin-bottom: 14px;
+        }
+        .option-group {
+            margin-bottom: 10px;
+            padding: 9px 14px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .option-group:hover {
+            background: #e0f2fe;
+            border-color: #7dd3fc;
+        }
+        .option-group label {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #1e293b;
+            font-size: 14px;
+            width: 100%;
+        }
+        .btn-submit-exam {
+            background: #003b63;
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            margin: 25px 0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-submit-exam:hover {
+            background: #ffd900;
+            color: #003b63;
+            transform: translateY(-2px);
+        }
+        /* Result Card */
+        .result-container {
+            display: none;
+            max-width: 540px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.97);
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .pass { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .fail { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .score-box {
+            background: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 18px 0;
+            border: 2px dashed #0077a8;
+        }
+        .score-num { font-size: 42px; font-weight: bold; color: #003b63; }
+        .score-total { font-size: 20px; color: #64748b; }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            font-size: 15px;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 8px;
+            color: #334155;
+        }
+        .btn-action {
+            display: inline-block;
+            background: #003b63;
+            color: white;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 8px 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-action:hover {
+            background: #0077a8;
+        }
+    </style>
+</head>
+<body>
+
+<center>
+
+<div class="exam-page-container">
+
+    <!-- RESULT CONTAINER -->
+    <div id="resultBox" class="result-container">
+        <div style="font-size: 45px; margin-bottom: 8px;">📊</div>
+        <h2 style="color: #003b63; margin: 0 0 5px; font-size: 22px;">TN Police Online Examination</h2>
+        <p style="color: #64748b; margin-bottom: 15px; font-size: 14px;">Web Technology Lab - Three-Tier System Result</p>
+
+        <div id="resBadge" class="status-badge pass">Result: PASS</div>
+
+        <div class="score-box">
+            <div class="score-num"><span id="resScore">0</span> <span class="score-total">/ 5</span></div>
+            <div style="color: #003b63; font-size: 14px; margin-top: 5px; font-weight: bold;">Total Examination Score</div>
+        </div>
+
+        <div class="detail-row">
+            <span>Candidate Name:</span>
+            <strong id="resCandidate">Student</strong>
+        </div>
+        <div class="detail-row">
+            <span>Register Number:</span>
+            <strong id="resRegNo">-</strong>
+        </div>
+        <div class="detail-row">
+            <span>Percentage:</span>
+            <strong id="resPercent">0%</strong>
+        </div>
+        <div class="detail-row">
+            <span>Minimum Passing Marks:</span>
+            <strong>50.00% (3 / 5)</strong>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <button class="btn-action" onclick="retakeExam()">Retake Examination</button>
+            <a href="exam_marks.html" class="btn-action" style="background: #0284c7;">📊 View Mark List</a>
+            <a href="index.html" class="btn-action" style="background: #64748b;">Home</a>
+        </div>
+    </div>
+
+    <!-- EXAM FORM -->
+    <div id="examFormContainer">
+        <div class="exam-header">
+            <div>
+                <h1>📝 Online Examination Portal</h1>
+                <div style="font-size: 13px; color: #cbd5e1; margin-top: 3px;">Three-Tier Architecture Lab Exercise (Ex: 6)</div>
+            </div>
+            <div style="text-align: right; font-size: 13px;">
+                <a href="exam_marks.html" style="color: #ffd900; text-decoration: none; font-weight: bold;">📊 Mark List</a> |
+                <a href="index.html" style="color: white; text-decoration: none;">Home</a>
+            </div>
+        </div>
+
+        <form id="onlineExamForm">
+
+            <div class="candidate-box">
+                <div>
+                    <label for="candName">Candidate Name *</label>
+                    <input type="text" id="candName" placeholder="Enter Full Name" required>
+                </div>
+                <div>
+                    <label for="candRegNo">Register Number *</label>
+                    <input type="text" id="candRegNo" placeholder="e.g. 710021104001" required>
+                </div>
+            </div>
+
+            <!-- Q1 -->
+            <div class="q-card">
+                <div class="q-title">Q1. Which of the following is used to create dynamic web pages in Java?</div>
+                <div class="option-group">
+                    <input type="radio" id="q1_1" name="q1" value="1" required>
+                    <label for="q1_1">HTML (HyperText Markup Language)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q1_2" name="q1" value="2">
+                    <label for="q1_2">JSP (JavaServer Pages)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q1_3" name="q1" value="3">
+                    <label for="q1_3">CSS (Cascading Style Sheets)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q1_4" name="q1" value="4">
+                    <label for="q1_4">SQL (Structured Query Language)</label>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="q-card">
+                <div class="q-title">Q2. What is the scope of a Java Bean created with scope='session'?</div>
+                <div class="option-group">
+                    <input type="radio" id="q2_1" name="q2" value="1" required>
+                    <label for="q2_1">Single Request only</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q2_2" name="q2" value="2">
+                    <label for="q2_2">Entire Web Application</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q2_3" name="q2" value="3">
+                    <label for="q2_3">Active User Session across multiple requests</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q2_4" name="q2" value="4">
+                    <label for="q2_4">Page Level only</label>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="q-card">
+                <div class="q-title">Q3. Which implicit object in JSP is used for session management?</div>
+                <div class="option-group">
+                    <input type="radio" id="q3_1" name="q3" value="1" required>
+                    <label for="q3_1">response</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q3_2" name="q3" value="2">
+                    <label for="q3_2">session</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q3_3" name="q3" value="3">
+                    <label for="q3_3">application</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q3_4" name="q3" value="4">
+                    <label for="q3_4">request</label>
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="q-card">
+                <div class="q-title">Q4. Which package contains JDBC classes for database interaction in Java?</div>
+                <div class="option-group">
+                    <input type="radio" id="q4_1" name="q4" value="1" required>
+                    <label for="q4_1">java.io</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q4_2" name="q4" value="2">
+                    <label for="q4_2">java.util</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q4_3" name="q4" value="3">
+                    <label for="q4_3">java.sql</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q4_4" name="q4" value="4">
+                    <label for="q4_4">javax.servlet</label>
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="q-card">
+                <div class="q-title">Q5. In Three-Tier Architecture, which tier handles business rules & logic?</div>
+                <div class="option-group">
+                    <input type="radio" id="q5_1" name="q5" value="1" required>
+                    <label for="q5_1">Presentation Tier (Client Browser)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q5_2" name="q5" value="2">
+                    <label for="q5_2">Application / Logic Tier (Server)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q5_3" name="q5" value="3">
+                    <label for="q5_3">Database Tier (MySQL Database)</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="q5_4" name="q5" value="4">
+                    <label for="q5_4">Network Tier</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-exam">Submit Examination</button>
+
+        </form>
+    </div>
+
+</div>
+
+</center>
+
+<script>
+// Correct answers: Q1: 2, Q2: 3, Q3: 2, Q4: 3, Q5: 2
+const correctAnswers = {
+    q1: "2",
+    q2: "3",
+    q3: "2",
+    q4: "3",
+    q5: "2"
+};
+
+document.getElementById("onlineExamForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("candName").value.trim();
+    const regNo = document.getElementById("candRegNo").value.trim();
+
+    let score = 0;
+    const totalQuestions = 5;
+
+    for (let q in correctAnswers) {
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        if (selected && selected.value === correctAnswers[q]) {
+            score++;
+        }
+    }
+
+    const percentage = ((score / totalQuestions) * 100).toFixed(2);
+    const isPass = percentage >= 50.0;
+    const status = isPass ? "PASS" : "FAIL";
+    const nowStr = new Date().toLocaleString("en-GB");
+
+    // Save exam result to localStorage
+    let examResults = JSON.parse(localStorage.getItem("tnExamResults")) || [];
+    examResults.unshift({
+        name: name,
+        regNo: regNo,
+        score: score,
+        total: totalQuestions,
+        percentage: percentage,
+        status: status,
+        date: nowStr
+    });
+    localStorage.setItem("tnExamResults", JSON.stringify(examResults));
+
+    // Show result card
+    document.getElementById("resCandidate").innerText = name;
+    document.getElementById("resRegNo").innerText = regNo;
+    document.getElementById("resScore").innerText = score;
+    document.getElementById("resPercent").innerText = percentage + "%";
+
+    const badge = document.getElementById("resBadge");
+    badge.innerText = "Result: " + status;
+    badge.className = "status-badge " + (isPass ? "pass" : "fail");
+
+    document.getElementById("examFormContainer").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+});
+
+function retakeExam() {
+    document.getElementById("onlineExamForm").reset();
+    document.getElementById("resultBox").style.display = "none";
+    document.getElementById("examFormContainer").style.display = "block";
+}
+</script>
+
+</body>
+</html>

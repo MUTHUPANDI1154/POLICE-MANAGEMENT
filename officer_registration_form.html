@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Police Officer Registration - Program 1</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #082b55, #07559a);
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box {
+    width: 420px;
+    background: rgba(255, 255, 255, .13);
+    border: 1px solid #6ca5d4;
+    border-radius: 18px;
+    padding: 30px 26px;
+    box-shadow: 0 10px 30px #001d3d;
+}
+.logo {
+    text-align: center;
+    font-size: 40px;
+}
+h1 {
+    text-align: center;
+    color: #ffd900;
+    font-size: 26px;
+}
+h2 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+}
+label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 12px 0 5px;
+}
+input, select {
+    width: 100%;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+    color: #000000;
+}
+button {
+    width: 100%;
+    height: 40px;
+    border: 0;
+    border-radius: 22px;
+    background: #079ff0;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 22px;
+    cursor: pointer;
+}
+button:hover {
+    background: #00b5ff;
+}
+.back-link {
+    text-align: center;
+    margin-top: 20px;
+}
+.back-link a {
+    color: #ffd900;
+    text-decoration: none;
+    font-weight: bold;
+}
+.back-link a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <div class="logo">👮‍♂️</div>
+    <h1>TN Police Department</h1>
+    <h2>Officer Registration Form (Program 1)</h2>
+
+    <!-- Officer Registration Form with local persistence & confirmation -->
+    <form id="officerRegForm">
+
+        <label for="officerName">Officer Name</label>
+        <input type="text" id="officerName" name="officerName" placeholder="Enter Full Name" required>
+
+        <label for="policeId">Police ID</label>
+        <input type="text" id="policeId" name="policeId" placeholder="e.g. TNP-1042" required>
+
+        <label for="rank">Rank / Designation</label>
+        <select id="rank" name="rank" required>
+            <option value="">-- Select Rank --</option>
+            <option value="Constable">Constable</option>
+            <option value="Head Constable">Head Constable</option>
+            <option value="Sub-Inspector (SI)">Sub-Inspector (SI)</option>
+            <option value="Inspector of Police">Inspector of Police</option>
+            <option value="Assistant Commissioner">Assistant Commissioner</option>
+            <option value="Superintendent of Police (SP)">Superintendent of Police (SP)</option>
+        </select>
+
+        <label for="station">Police Station</label>
+        <input type="text" id="station" name="station" placeholder="e.g. Chennai Central PS" required>
+
+        <button type="submit">Submit Registration</button>
+
+    </form>
+
+    <!-- CONFIRMATION RESULT CARD (Displayed after submit) -->
+    <div id="officerConfirmation" style="display: none; text-align: center;">
+        <div style="background: #2ecc71; color: #082b55; padding: 12px; border-radius: 8px; font-weight: bold; margin: 15px 0;">
+            ✅ Officer Details Registered Successfully!
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; font-size: 14px;">
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Officer Name:</th><td id="resOfficerName" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Police ID:</th><td id="resPoliceId" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Rank / Designation:</th><td id="resRank" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Police Station:</th><td id="resStation" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+            <tr><th style="color: #ffd900; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);">Registered On:</th><td id="resDate" style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.2);"></td></tr>
+        </table>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="officers.html" style="display: block; background: #079ff0; color: white; padding: 10px; border-radius: 20px; text-decoration: none; font-weight: bold;">📋 View All Registered Officers</a>
+            <button type="button" onclick="resetForm()" style="background: rgba(255,255,255,0.2); border: 1px solid #ffd900; color: #ffd900; margin-top: 0;">+ Register Another Officer</button>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="officers.html">View Registered Officers</a> | 
+        <a href="officer.html">← Back to Officer Dashboard</a>
+    </div>
+</div>
+
+<script>
+document.getElementById("officerRegForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const officerName = document.getElementById("officerName").value.trim();
+    const policeId = document.getElementById("policeId").value.trim();
+    const rank = document.getElementById("rank").value;
+    const station = document.getElementById("station").value.trim();
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-GB") + " " + now.toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit"});
+
+    // Store in localStorage
+    let officers = JSON.parse(localStorage.getItem("tnOfficers")) || [];
+    officers.push({
+        id: policeId,
+        name: officerName,
+        rank: rank,
+        station: station,
+        date: dateStr
+    });
+    localStorage.setItem("tnOfficers", JSON.stringify(officers));
+
+    // Show confirmation card
+    document.getElementById("resOfficerName").innerText = officerName;
+    document.getElementById("resPoliceId").innerText = policeId;
+    document.getElementById("resRank").innerText = rank;
+    document.getElementById("resStation").innerText = station;
+    document.getElementById("resDate").innerText = dateStr;
+
+    document.getElementById("officerRegForm").style.display = "none";
+    document.getElementById("officerConfirmation").style.display = "block";
+});
+
+function resetForm() {
+    document.getElementById("officerRegForm").reset();
+    document.getElementById("officerConfirmation").style.display = "none";
+    document.getElementById("officerRegForm").style.display = "block";
+}
+</script>
+
+</body>
+</html>

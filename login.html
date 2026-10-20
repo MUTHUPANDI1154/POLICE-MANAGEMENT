@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TN Police - Citizen Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .demo-hint {
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-top: 12px;
+            text-align: center;
+            background: rgba(255,255,255,0.08);
+            padding: 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body class="login-page">
+
+    <div class="login-box">
+
+        <div class="police-icon">🚔</div>
+
+        <h1>TN Police</h1>
+        <h2>Citizen Login Portal</h2>
+
+        <form id="loginForm">
+
+            <label for="loginUsername">Username</label>
+            <input type="text"
+                   id="loginUsername"
+                   placeholder="Enter username"
+                   required>
+
+            <label for="loginPassword">Password</label>
+            <input type="password"
+                   id="loginPassword"
+                   placeholder="Enter password"
+                   required>
+
+            <div id="loginError" class="error-message">
+                ❌ Invalid username or password! Please check or register.
+            </div>
+
+            <button type="submit">
+                Login
+            </button>
+
+            <div class="demo-hint">
+                💡 Demo Login: username: <strong>admin</strong> | password: <strong>admin123</strong>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS MESSAGE -->
+        <div id="loginSuccess" class="success-message" style="display: none; background: #2ecc71; color: #082b55; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 15px; text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 5px;">✅</div>
+            <div id="welcomeMsg" style="font-size: 16px;">Login Successful!</div>
+            <p style="font-size: 13px; margin: 6px 0 0; color: #064e3b;">Redirecting to Home Page...</p>
+            <a href="index.html" style="display: inline-block; margin-top: 10px; background: #082b55; color: #ffd900; padding: 6px 14px; border-radius: 15px; text-decoration: none; font-size: 13px;">Continue to Home Now →</a>
+        </div>
+
+        <p class="register-text" style="margin-top: 20px; text-align: center;">
+            Don't have an account?
+            <a href="register.html" style="color: #ffd900; font-weight: bold;">Create Account</a>
+            <br><br>
+            <a href="index.html" style="color: #6ca5d4; text-decoration: none;">← Back to Home</a>
+        </p>
+
+    </div>
+
+    <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const errorBox = document.getElementById("loginError");
+        const successBox = document.getElementById("loginSuccess");
+        const welcomeMsg = document.getElementById("welcomeMsg");
+        const loginForm = document.getElementById("loginForm");
+
+        errorBox.style.display = "none";
+
+        // Get registered users from localStorage
+        let users = JSON.parse(localStorage.getItem("tnUsers")) || [];
+        
+        // Find matching user or fallback demo
+        let matchedUser = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+
+        if (!matchedUser && username.toLowerCase() === "admin" && password === "admin123") {
+            matchedUser = { name: "System Administrator", username: "admin" };
+        }
+
+        if (matchedUser) {
+            // Save active session
+            sessionStorage.setItem("tnCurrentUser", JSON.stringify(matchedUser));
+            welcomeMsg.innerHTML = `Welcome, <strong>${matchedUser.name}</strong>!`;
+            loginForm.style.display = "none";
+            successBox.style.display = "block";
+
+            setTimeout(function() {
+                window.location.href = "index.html";
+            }, 1200);
+        } else {
+            errorBox.style.display = "block";
+        }
+    });
+    </script>
+
+</body>
+</html>

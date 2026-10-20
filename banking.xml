@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="banking.xsl"?>
+<accounts>
+    <account>
+        <accountno>1001</accountno>
+        <name>Yugesh</name>
+        <accounttype>Savings</accounttype>
+        <balance>25000</balance>
+        <branch>Chennai</branch>
+    </account>
+    <account>
+        <accountno>1002</accountno>
+        <name>Arun</name>
+        <accounttype>Current</accounttype>
+        <balance>50000</balance>
+        <branch>Coimbatore</branch>
+    </account>
+    <account>
+        <accountno>1003</accountno>
+        <name>Rahul</name>
+        <accounttype>Savings</accounttype>
+        <balance>35000</balance>
+        <branch>Bangalore</branch>
+    </account>
+</accounts>

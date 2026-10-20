@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Registration - TN Police</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .complaint-wrapper {
+            max-width: 850px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: #1e293b;
+            text-align: left;
+        }
+        .complaint-wrapper h1 {
+            color: #003b63;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-shadow: none;
+        }
+        .complaint-wrapper h2 {
+            text-align: center;
+            color: #0077a8;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+            color: #1e293b;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            border-color: #0077a8;
+            background: #ffffff;
+        }
+        .btn-submit-comp {
+            background: #003b63;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn-submit-comp:hover {
+            background: #0077a8;
+            transform: translateY(-2px);
+        }
+        /* Success Confirmation Box */
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .success-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .success-icon {
+            font-size: 36px;
+        }
+        .csr-pill {
+            display: inline-block;
+            background: #003b63;
+            color: #ffd900;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin: 8px 0;
+        }
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 13px;
+        }
+        .comp-table th {
+            background: #003b63;
+            color: #ffd900;
+            padding: 10px;
+            text-align: left;
+        }
+        .comp-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .comp-table tr:hover {
+            background: #f1f5f9;
+        }
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+        .nav-links-bar {
+            text-align: center;
+            margin-top: 25px;
+            font-weight: bold;
+        }
+        .nav-links-bar a {
+            color: #003b63;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav-links-bar a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<center>
+
+    <div class="complaint-wrapper">
+        <div style="text-align: center; font-size: 40px;">👮‍♂️</div>
+        <h1>Tamil Nadu Police Department</h1>
+        <h2>Citizen Complaint Registration Portal</h2>
+
+        <!-- SUCCESS CONFIRMATION BOX -->
+        <div id="successBox" class="success-box">
+            <div class="success-header">
+                <div class="success-icon">✅</div>
+                <div>
+                    <h3 style="color: #166534; margin: 0; font-size: 20px;">Complaint Registered Successfully!</h3>
+                    <p style="margin: 4px 0 0; color: #15803d; font-size: 14px;">Your complaint has been safely recorded in the TN Police database.</p>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #bbf7d0;">
+                <div>Your Official CSR (Community Service Register) Number:</div>
+                <div class="csr-pill" id="displayCsr">CSR-TN-2026-0000</div>
+                <p style="font-size: 13px; color: #64748b; margin: 0;">Please keep this CSR Number safe for complaint tracking and status updates.</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px;">
+                    <tr><td style="font-weight: bold; width: 35%; padding: 6px 0;">Complainant:</td><td id="resName"></td></tr>
+                    <tr><td style="font-weight: bold; padding: 6px 0;">Mobile:</td><td id="resMobile"></td></tr>
+                    <tr><td style="font-weight: bold; padding: 6px 0;">Category:</td><td id="resCategory"></td></tr>
+                    <tr><td style="font-weight: bold; padding: 6px 0;">Offence:</td><td id="resOffence"></td></tr>
+                    <tr><td style="font-weight: bold; padding: 6px 0;">Date & Place:</td><td id="resPlace"></td></tr>
+                    <tr><td style="font-weight: bold; padding: 6px 0;">Status:</td><td><strong style="color: #16a34a;">● Registered / Under Review</strong></td></tr>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button type="button" onclick="resetComplaintForm()" style="background: #003b63; color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: bold;">+ File Another Complaint</button>
+                <a href="complaints.html" style="background: #0284c7; color: white; padding: 10px 18px; border-radius: 20px; text-decoration: none; font-weight: bold; display: inline-block;">📋 View All Complaints</a>
+            </div>
+        </div>
+
+        <!-- COMPLAINT REGISTRATION FORM -->
+        <form id="complaintForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="compName">Full Name *</label>
+                    <input type="text" id="compName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="compMobile">Mobile Number *</label>
+                    <input type="tel" id="compMobile" placeholder="10-digit mobile number" maxlength="10" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="compEmail">Email Address</label>
+                    <input type="email" id="compEmail" placeholder="example@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="compCategory">Complaint Category *</label>
+                    <select id="compCategory" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="Safety & Threat">Safety & Threat</option>
+                        <option value="Theft & Property Crime">Theft & Property Crime</option>
+                        <option value="Harassment / Cybercrime">Harassment / Cybercrime</option>
+                        <option value="Traffic & Road Incident">Traffic & Road Incident</option>
+                        <option value="Fraud / Financial Scam">Fraud / Financial Scam</option>
+                        <option value="Public Nuisance">Public Nuisance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="compOffence">Type of Offence *</label>
+                    <input type="text" id="compOffence" placeholder="e.g. Mobile Theft, Harassment" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="compDate">Date of Incident *</label>
+                    <input type="date" id="compDate" required>
+                </div>
+
+                <div class="form-group-full form-group">
+                    <label for="compPlace">Place / Location of Incident *</label>
+                    <input type="text" id="compPlace" placeholder="e.g. T. Nagar Bus Stand, Chennai" required>
+                </div>
+
+                <div class="form-group-full form-group">
+                    <label for="compDesc">Complaint Description *</label>
+                    <textarea id="compDesc" rows="4" placeholder="Describe the incident in detail..." required></textarea>
+                </div>
+
+                <div class="form-group-full form-group">
+                    <label for="compEvidence">Attach Evidence (Optional Document/Photo)</label>
+                    <input type="file" id="compEvidence">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-comp">Submit Complaint</button>
+        </form>
+
+        <hr style="margin: 35px 0 20px; border: 0; border-top: 1px solid #e2e8f0;">
+
+        <!-- LIVE COMPLAINTS TABLE SHOWING STORED COMPLAINTS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="color: #003b63; margin: 0; font-size: 18px;">📋 Registered Complaints (<span id="compCount">0</span>)</h3>
+            <a href="complaints.html" style="color: #0284c7; font-weight: bold; text-decoration: none; font-size: 13px;">View Full Dashboard →</a>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="comp-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>CSR No</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Category</th>
+                        <th>Place</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintTableBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="nav-links-bar">
+            <a href="index.html">← Back to Home</a> |
+            <a href="citizen.html">Citizen Services</a> |
+            <a href="complaints.html">All Complaints Page</a>
+        </div>
+    </div>
+
+</center>
+
+<script>
+// Seed default complaints if empty
+function initComplaints() {
+    let complaints = JSON.parse(localStorage.getItem("tnComplaints")) || [];
+    if (complaints.length === 0) {
+        complaints = [
+            {
+                csrNo: "CSR-TN-2026-1042",
+                name: "Karthik Raj",
+                mobile: "9876543210",
+                email: "karthik@example.com",
+                category: "Theft & Property Crime",
+                offence: "Two-Wheeler Theft",
+                date: "2026-10-15",
+                place: "T. Nagar, Chennai",
+                desc: "Hero Splendor bike parked near market was missing.",
+                status: "Investigation Ongoing",
+                time: "15/10/2026, 11:30 AM"
+            },
+            {
+                csrNo: "CSR-TN-2026-1088",
+                name: "Priya Sundaram",
+                mobile: "9123456780",
+                email: "priya@example.com",
+                category: "Harassment / Cybercrime",
+                offence: "Social Media Identity Theft",
+                date: "2026-10-17",
+                place: "Madurai City",
+                desc: "Fake account created using personal photos.",
+                status: "FIR Registered",
+                time: "17/10/2026, 04:15 PM"
+            }
+        ];
+        localStorage.setItem("tnComplaints", JSON.stringify(complaints));
+    }
+    renderComplaints();
+}
+
+function renderComplaints() {
+    const complaints = JSON.parse(localStorage.getItem("tnComplaints")) || [];
+    const tbody = document.getElementById("complaintTableBody");
+    const countSpan = document.getElementById("compCount");
+    tbody.innerHTML = "";
+    countSpan.innerText = complaints.length;
+
+    if (complaints.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 20px;">No complaints registered yet.</td></tr>`;
+        return;
+    }
+
+    complaints.forEach((comp, idx) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><strong>${idx + 1}</strong></td>
+            <td><span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 12px; font-weight: bold;">${comp.csrNo}</span></td>
+            <td>${comp.name}</td>
+            <td>${comp.mobile}</td>
+            <td>${comp.category}</td>
+            <td>${comp.place}</td>
+            <td><span style="color: #16a34a; font-weight: bold;">${comp.status || "Registered"}</span></td>
+            <td><button class="btn-delete" onclick="deleteComplaint(${idx})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function deleteComplaint(index) {
+    let complaints = JSON.parse(localStorage.getItem("tnComplaints")) || [];
+    if (confirm("Are you sure you want to delete this complaint record?")) {
+        complaints.splice(index, 1);
+        localStorage.setItem("tnComplaints", JSON.stringify(complaints));
+        renderComplaints();
+    }
+}
+
+document.getElementById("complaintForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("compName").value.trim();
+    const mobile = document.getElementById("compMobile").value.trim();
+    const email = document.getElementById("compEmail").value.trim();
+    const category = document.getElementById("compCategory").value;
+    const offence = document.getElementById("compOffence").value.trim();
+    const date = document.getElementById("compDate").value;
+    const place = document.getElementById("compPlace").value.trim();
+    const desc = document.getElementById("compDesc").value.trim();
+    const evidenceInput = document.getElementById("compEvidence");
+    const evidenceName = evidenceInput.files.length > 0 ? evidenceInput.files[0].name : "No Attachment";
+
+    // Generate unique CSR Number
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const csrNo = "CSR-TN-2026-" + randomNum;
+    const nowStr = new Date().toLocaleString("en-GB");
+
+    const newComp = {
+        csrNo: csrNo,
+        name: name,
+        mobile: mobile,
+        email: email,
+        category: category,
+        offence: offence,
+        date: date,
+        place: place,
+        desc: desc,
+        evidence: evidenceName,
+        status: "Registered / Under Review",
+        time: nowStr
+    };
+
+    let complaints = JSON.parse(localStorage.getItem("tnComplaints")) || [];
+    complaints.unshift(newComp); // Add to top
+    localStorage.setItem("tnComplaints", JSON.stringify(complaints));
+
+    // Show confirmation box
+    document.getElementById("displayCsr").innerText = csrNo;
+    document.getElementById("resName").innerText = name;
+    document.getElementById("resMobile").innerText = mobile;
+    document.getElementById("resCategory").innerText = category;
+    document.getElementById("resOffence").innerText = offence;
+    document.getElementById("resPlace").innerText = `${date} at ${place}`;
+
+    document.getElementById("complaintForm").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+
+    renderComplaints();
+});
+
+function resetComplaintForm() {
+    document.getElementById("complaintForm").reset();
+    document.getElementById("successBox").style.display = "none";
+    document.getElementById("complaintForm").style.display = "block";
+}
+
+// Initial load
+initComplaints();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamil Nadu Police Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .top-navbar {
+            background: rgba(0, 59, 99, 0.95);
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .nav-brand {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd900;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffd900;
+        }
+        .btn-nav-primary {
+            background: #0284c7 !important;
+            color: white !important;
+            border-radius: 20px !important;
+        }
+        .btn-nav-primary:hover {
+            background: #0369a1 !important;
+        }
+        .user-badge {
+            color: #4ade80;
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+        }
+        .quick-actions-bar {
+            margin: 25px auto 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            max-width: 950px;
+        }
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #003b63;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 10px 18px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .quick-btn:hover {
+            background: #ffd900;
+            color: #003b63;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-navbar">
+        <a href="index.html" class="nav-brand">
+            <span>👮‍♂️</span>
+            <span>Tamil Nadu Police Portal</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="citizen.html">Citizen Services</a>
+            <a href="officer.html">Officer Portal</a>
+            <a href="complaint.html">File Complaint</a>
+            <a href="complaints.html">View Complaints</a>
+            <a href="users.html">Users</a>
+            <a href="officers.html">Officers</a>
+            <a href="exam_online.html">Online Exam</a>
+            
+            <span id="userSection">
+                <a href="login.html">Login</a>
+                <a href="register.html" class="btn-nav-primary">Register</a>
+            </span>
+        </nav>
+    </header>
+
+<center>
+
+    <h1>Tamil Nadu Police Management System</h1>
+    <p>Click any department or icon to access police records & citizen services</p>
+
+    <!-- IMAGE MAP -->
+    <img src="police management.png"
+         width="1077"
+         height="592"
+         usemap="#policeMap"
+         alt="Police Management System">
+
+    <map name="policeMap">
+        <!-- CITIZEN MANAGEMENT -->
+        <area shape="rect"
+              coords="2,3,356,294"
+              href="citizen.html"
+              alt="Citizen Management"
+              title="Citizen Management">
+
+        <!-- POLICE OFFICER MANAGEMENT -->
+        <area shape="rect"
+              coords="361,3,716,294"
+              href="officer.html"
+              alt="Police Officer Management"
+              title="Police Officer Management">
+
+        <!-- COMPLAINT REGISTRATION -->
+        <area shape="rect"
+              coords="721,3,1075,294"
+              href="complaint.html"
+              alt="Complaint Registration"
+              title="Complaint Registration">
+
+        <!-- FIR RECORDS -->
+        <area shape="rect"
+              coords="2,300,356,589"
+              href="fir.html"
+              alt="FIR Records"
+              title="FIR Records">
+
+        <!-- CRIMINAL RECORDS -->
+        <area shape="rect"
+              coords="361,300,716,589"
+              href="criminal.html"
+              alt="Criminal Records"
+              title="Criminal Records">
+
+        <!-- MISSING & VEHICLE -->
+        <area shape="rect"
+              coords="721,300,1075,589"
+              href="missing.html"
+              alt="Missing and Vehicle"
+              title="Missing and Vehicle">
+    </map>
+
+    <!-- QUICK ACTIONS BAR -->
+    <div class="quick-actions-bar">
+        <a href="complaint.html" class="quick-btn">📝 File a Complaint</a>
+        <a href="complaints.html" class="quick-btn">📋 View Complaints List</a>
+        <a href="officer_registration_form.html" class="quick-btn">👮 Register Officer (Prog 1)</a>
+        <a href="officer_login_form.html" class="quick-btn">🚔 Officer Session (Prog 2)</a>
+        <a href="officers.html" class="quick-btn">📋 Officers Directory</a>
+        <a href="exam_online.html" class="quick-btn">📊 Police Online Exam</a>
+        <a href="police.xml" target="_blank" class="quick-btn">📑 XML/XSL Records</a>
+    </div>
+
+</center>
+
+<script>
+// Check if user is logged in
+const currentUser = JSON.parse(sessionStorage.getItem("tnCurrentUser"));
+const userSec = document.getElementById("userSection");
+if (currentUser && userSec) {
+    userSec.innerHTML = `
+        <span class="user-badge">👤 ${currentUser.name || currentUser.username}</span>
+        <a href="#" onclick="logoutUser()" style="color: #fca5a5; font-size: 13px;">Logout</a>
+    `;
+}
+
+function logoutUser() {
+    sessionStorage.removeItem("tnCurrentUser");
+    window.location.reload();
+}
+</script>
+
+</body>
+</html>
